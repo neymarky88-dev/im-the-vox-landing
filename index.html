@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I'm the VOX — 100% Offline AI Voice Cloning & Narration</title>
+    <meta name="description" content="Clone any voice in 10 seconds and narrate books, scripts, or articles offline. Zero cloud fees, complete data privacy, and professional FFmpeg audio enhancements.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS Custom Properties / Design System */
+        :root {
+            --bg-base: #0a0b10;
+            --bg-surface: rgba(17, 20, 28, 0.65);
+            --bg-surface-solid: #11141c;
+            --border-glow: rgba(99, 102, 241, 0.15);
+            --border-light: rgba(255, 255, 255, 0.08);
+            
+            --color-primary: #6366f1; /* Indigo */
+            --color-secondary: #a855f7; /* Purple */
+            --color-accent: #06b6d4; /* Cyan */
+            --color-success: #10b981; /* Emerald */
+            --color-text-main: #f3f4f6;
+            --color-text-muted: #9ca3af;
+            
+            --font-display: 'Outfit', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Reset & Base Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--color-text-main);
+            font-family: var(--font-body);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Abstract Glowing Backgrounds */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, rgba(0,0,0,0) 70%);
+            top: -100px;
+            left: -100px;
+            z-index: -1;
+            filter: blur(80px);
+            pointer-events: none;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.08) 0%, rgba(0,0,0,0) 70%);
+            top: 600px;
+            right: -200px;
+            z-index: -1;
+            filter: blur(100px);
+            pointer-events: none;
+        }
+
+        /* Navigation Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            background: rgba(10, 11, 16, 0.7);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.25rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--color-text-main);
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--color-accent);
+            box-shadow: 0 0 10px var(--color-accent);
+        }
+
+        nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--color-text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: var(--transition-smooth);
+        }
+
+        nav a:hover {
+            color: var(--color-text-main);
+        }
+
+        .btn-header {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 99px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2);
+            transition: var(--transition-smooth);
+        }
+
+        .btn-header:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 10rem 2rem 6rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .badge-ltd {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            color: #c7d2fe;
+            padding: 0.4rem 1rem;
+            border-radius: 99px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .badge-ltd .pulse {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: var(--color-success);
+            box-shadow: 0 0 8px var(--color-success);
+            animation: pulse-glow 2s infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.4); opacity: 0.6; }
+        }
+
+        .hero h1 {
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 3.5rem;
+            line-height: 1.15;
+            letter-spacing: -1px;
+            margin-bottom: 1.5rem;
+            max-width: 900px;
+            background: linear-gradient(180deg, #ffffff 30%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p.lead {
+            font-size: 1.25rem;
+            color: var(--color-text-muted);
+            max-width: 750px;
+            margin-bottom: 3rem;
+            font-weight: 400;
+        }
+
+        /* Interactive Audio Visualizer */
+        .visualizer-container {
+            width: 100%;
+            max-width: 650px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-light);
+            border-radius: 20px;
+            padding: 1.5rem;
+            backdrop-filter: blur(16px);
+            margin-bottom: 3.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.2rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .visualizer-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--color-primary), var(--color-secondary), transparent);
+        }
+
+        .visualizer-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        canvas {
+            width: 100%;
+            height: 70px;
+            background: rgba(10, 11, 16, 0.4);
+            border-radius: 10px;
+        }
+
+        .visualizer-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            width: 100%;
+        }
+
+        .btn-play {
+            background: var(--color-primary);
+            border: none;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-smooth);
+            box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+            flex-shrink: 0;
+        }
+
+        .btn-play:hover {
+            transform: scale(1.08);
+            background: #5558e6;
+        }
+
+        .btn-play svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        .audio-track-info {
+            text-align: left;
+            flex-grow: 1;
+        }
+
+        .audio-track-title {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .audio-track-desc {
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+        }
+
+        .visualizer-tag {
+            font-size: 0.75rem;
+            background: rgba(6, 182, 212, 0.15);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            color: #22d3ee;
+            padding: 0.2rem 0.6rem;
+            border-radius: 99px;
+            font-weight: 600;
+        }
+
+        /* Section Container */
+        section.info-section {
+            padding: 6rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-header h2 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 2.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            color: var(--color-text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 2.5rem;
+            backdrop-filter: blur(16px);
+            transition: var(--transition-smooth);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1.2rem;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(99, 102, 241, 0.3);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.05);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            color: var(--color-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .feature-card h3 {
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: 1.25rem;
+        }
+
+        .feature-card p {
+            color: var(--color-text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* How it Works */
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 28px;
+            top: 20px;
+            bottom: 20px;
+            width: 2px;
+            background: linear-gradient(180deg, var(--color-primary), var(--color-secondary));
+            opacity: 0.3;
+        }
+
+        .timeline-step {
+            display: flex;
+            gap: 2rem;
+            position: relative;
+        }
+
+        .step-num {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            background: var(--bg-surface-solid);
+            border: 2px solid var(--color-primary);
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.25);
+            z-index: 1;
+        }
+
+        .timeline-step:nth-child(even) .step-num {
+            border-color: var(--color-secondary);
+            box-shadow: 0 0 15px rgba(168, 85, 247, 0.25);
+        }
+
+        .step-content {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 2rem;
+            flex-grow: 1;
+            backdrop-filter: blur(16px);
+        }
+
+        .step-content h3 {
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-content p {
+            color: var(--color-text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Redemption Portal Box */
+        .redeem-section {
+            background: linear-gradient(180deg, rgba(99, 102, 241, 0.05) 0%, transparent 100%);
+            border-radius: 24px;
+            border: 1px solid var(--border-glow);
+            padding: 4rem 2rem;
+            max-width: 800px;
+            margin: 4rem auto;
+            text-align: center;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .redeem-section h2 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .redeem-section p {
+            color: var(--color-text-muted);
+            margin-bottom: 2.5rem;
+            font-size: 1.05rem;
+        }
+
+        .redeem-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            max-width: 450px;
+            margin: 0 auto;
+        }
+
+        .input-group {
+            position: relative;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            background: rgba(10, 11, 16, 0.7);
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            padding: 0.9rem 1.2rem;
+            color: white;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: var(--transition-smooth);
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.2);
+            outline: none;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Success Download Box */
+        .download-box {
+            display: none;
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 500px;
+            margin: 0 auto;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .download-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--color-success);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+
+        .download-box h3 {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            margin-bottom: 0.8rem;
+            color: white;
+        }
+
+        .download-box p {
+            font-size: 0.95rem;
+            color: var(--color-text-muted);
+            margin-bottom: 1.8rem;
+            line-height: 1.5;
+        }
+
+        .btn-download {
+            background: var(--color-success);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+            transition: var(--transition-smooth);
+        }
+
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+            background: #059669;
+        }
+
+        .download-instructions {
+            margin-top: 1.5rem;
+            font-size: 0.8rem !important;
+            color: var(--color-text-muted);
+            text-align: left;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 1rem;
+        }
+
+        /* FAQ Accordion */
+        .faq-list {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .faq-item {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: var(--transition-smooth);
+        }
+
+        .faq-trigger {
+            width: 100%;
+            background: transparent;
+            border: none;
+            padding: 1.5rem;
+            text-align: left;
+            color: white;
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-icon {
+            width: 24px;
+            height: 24px;
+            transition: transform 0.3s ease;
+            color: var(--color-primary);
+        }
+
+        .faq-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            padding: 0 1.5rem;
+            color: var(--color-text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .faq-item.active .faq-content {
+            max-height: 200px;
+            padding-bottom: 1.5rem;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border-light);
+            padding: 4rem 2rem 2rem;
+            background: rgba(10, 11, 16, 0.9);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-logo {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: white;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .footer-links a {
+            color: var(--color-text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: var(--transition-smooth);
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 0.8rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 1.5rem;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Spinner / Loading CSS */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            nav {
+                display: none; /* simple mobile bypass */
+            }
+            .timeline::before {
+                left: 18px;
+            }
+            .step-num {
+                width: 38px;
+                height: 38px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <span>I'm the VOX</span>
+                <div class="logo-dot"></div>
+            </a>
+            <nav>
+                <a href="#features">Features</a>
+                <a href="#workflow">How It Works</a>
+                <a href="#redeem">Redemption</a>
+                <a href="#faq">FAQ</a>
+            </nav>
+            <a href="#redeem" class="btn-header">Redeem Code</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="badge-ltd">
+            <div class="pulse"></div>
+            AppSumo Lifetime Deal Live
+        </div>
+        <h1>Your Voice, 100% Offline.<br>Cloning & Narration in Seconds.</h1>
+        <p class="lead">Clone any voice with high fidelity using a 10-30s sample. Narrate long books or scripts and generate synchronized subtitles — entirely processed locally on your machine, with complete privacy and zero cloud fees.</p>
+        
+        <!-- Interactive Preview -->
+        <div class="visualizer-container">
+            <div class="visualizer-label">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c1.103 0 2 .897 2 2v12c0 1.103-.897 2-2 2s-2-.897-2-2v-12c0-1.103.897-2 2-2zm0-2c-2.209 0-4 1.791-4 4v12c0 2.209 1.791 4 4 4s4-1.791 4-4v-12c0-2.209-1.791-4-4-4zm8 9v3c0 4.418-3.582 8-8 8s-8-3.582-8-8v-3h-2v3c0 5.141 3.826 9.395 8.837 9.932v3.068h-4.837v2h11.674v-2h-4.837v-3.068c5.011-.537 8.837-4.791 8.837-9.932v-3h-2z"/></svg>
+                Listen to a Cloned Voice Sample
+                <span class="visualizer-tag">OmniVoice Engine</span>
+            </div>
+            <canvas id="waveform"></canvas>
+            <div class="visualizer-controls">
+                <button class="btn-play" id="playBtn" aria-label="Play sample audio">
+                    <svg viewBox="0 0 24 24"><path id="playIcon" d="M8 5v14l11-7z"/></svg>
+                </button>
+                <div class="audio-track-info">
+                    <div class="audio-track-title">Demo_Cloned_Man_Serious</div>
+                    <div class="audio-track-desc">Synthesized entirely offline with a 15-second sample</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="info-section">
+        <div class="section-header">
+            <h2>Designed for Privacy, Built for Power</h2>
+            <p>I'm the VOX leverages localized AI model inference to deliver professional-grade tools with zero network requests.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <h3>100% Offline Privacy</h3>
+                <p>All neural voice processing, audio treatment, and speech recognition occur locally. No cloud latency, no server queues, and complete privacy for sensitive content.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.5 1z"/></svg>
+                </div>
+                <h3>Advanced Audio Treatment</h3>
+                <p>Utilizes an integrated FFmpeg pipeline. Auto-removes background hums (RNNoise + Highpass) and handles post-synthesis issues (de-esser, compressor, limiter) for studio sound.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </div>
+                <h3>Whisper.cpp Subtitles</h3>
+                <p>Automatically generates perfectly aligned <code>.srt</code> subtitle files in multiple languages (English, Portuguese, Spanish, etc.) alongside your synthesized audio narrations.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Workflow -->
+    <section id="workflow" class="info-section">
+        <div class="section-header">
+            <h2>Simple, Transparent Workflow</h2>
+            <p>From setup to final export, the entire pipeline is designed for ease of use and immediate results.</p>
+        </div>
+        <div class="timeline">
+            <div class="timeline-step">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <h3>Launch Locally</h3>
+                    <p>Simply extract the portable ZIP folder. Double-click the <code>Im_the_VOX.exe</code> launcher to run the FastAPI server background-tray application and open the borderless client UI.</p>
+                </div>
+            </div>
+            <div class="timeline-step">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <h3>Clone the Voice</h3>
+                    <p>Upload a short reference audio file (.mp3, .wav) or record directly using your microphone. The FFmpeg engine filters out noise, and the OmniVoice model clones it to your voice bank.</p>
+                </div>
+            </div>
+            <div class="timeline-step">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                    <h3>Synthesize & Export</h3>
+                    <p>Paste your text. The engine splits sentences intelligently, synthesizes the audio chunk-by-chunk with natural breath pauses, concatenates the final track, and exports it alongside Whisper subtitles.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Redemption Portal Card -->
+    <section id="redeem" class="info-section">
+        <div class="redeem-section">
+            <div id="redeemFormWrapper">
+                <h2>Redeem AppSumo Purchase</h2>
+                <p>Welcome! Enter your AppSumo license code below to validate and unlock your downloadable portable client package.</p>
+                
+                <form class="redeem-form" id="redemptionForm">
+                    <div class="input-group">
+                        <label for="sumoCode">AppSumo License Code</label>
+                        <input type="text" id="sumoCode" placeholder="e.g. TEMP-XXXX-XXXX-XXXX" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="prefLang">Preferred Application Language</label>
+                        <select id="prefLang">
+                            <option value="pt">Português (Portuguese)</option>
+                            <option value="en" selected>English</option>
+                            <option value="es">Español (Spanish)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-submit">
+                        <span class="spinner" id="btnSpinner"></span>
+                        <span id="btnText">Validate Code & Download</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Download Success Frame -->
+            <div class="download-box" id="downloadBox">
+                <div class="download-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                </div>
+                <h3>License Validated Successfully!</h3>
+                <p>Your license key has been activated. Use the button below to download the portable application package (~2.4 GB ZIP) including all pre-loaded neural models and dependencies.</p>
+                <a href="https://github.com/neymarky88-dev/im-the-vox-landing/releases/download/v1.0.0/Im_the_VOX_v1.0_Portable.zip" class="btn-download" id="downloadBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Download Portable Zip
+                </a>
+                <div class="download-instructions">
+                    <strong>Launch Instructions:</strong><br>
+                    1. Extraia o conteúdo completo do arquivo ZIP em uma pasta.<br>
+                    2. Clique duas vezes em <code>Im_the_VOX.exe</code>.<br>
+                    3. A interface se abrirá automaticamente em seu navegador. Aproveite a narração offline!
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="info-section">
+        <div class="section-header">
+            <h2>Frequently Asked Questions</h2>
+            <p>Have questions about how a fully offline application operates? Here are some answers.</p>
+        </div>
+        <div class="faq-list">
+            <div class="faq-item">
+                <button class="faq-trigger">
+                    What are the minimum hardware requirements?
+                    <svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+                <div class="faq-content">
+                    <p>For comfortable offline generation, we recommend Windows 10/11, 8GB RAM, and a standard CPU. An NVIDIA GPU with CUDA compatibility accelerates voice synthesis to under 4 seconds, but a CPU fallback is supported out of the box.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-trigger">
+                    Does the app collect any personal data or audio files?
+                    <svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+                <div class="faq-content">
+                    <p>No. Data privacy is a core objective of the application. The FastAPI backend binds exclusively to localhost (127.0.0.1) and operates 100% offline. No voice samples, generated audios, or text contents are ever transmitted outside your computer.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-trigger">
+                    Is this a true Lifetime Deal?
+                    <svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+                <div class="faq-content">
+                    <p>Yes. Buying the deal on AppSumo grants you a lifetime license code. You redeem it once here to obtain the downloadable standalone bundle. There are no monthly fees, token limits, or recurring subscription payments.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                I'm the VOX
+            </div>
+            <div class="footer-links">
+                <a href="#features">Features</a>
+                <a href="#workflow">Process</a>
+                <a href="#redeem">Redeem</a>
+                <a href="#faq">FAQ</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2026 I'm the VOX. All rights reserved. Distributed under strict end-user license.
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // FAQ Accordion Logic
+        document.querySelectorAll('.faq-trigger').forEach(trigger => {
+            trigger.addEventListener('click', () => {
+                const parent = trigger.parentElement;
+                const isActive = parent.classList.contains('active');
+                
+                // Close all others
+                document.querySelectorAll('.faq-item').forEach(item => item.classList.remove('active'));
+                
+                if (!isActive) {
+                    parent.classList.add('active');
+                }
+            });
+        });
+
+        // Simulated Audio Waveform Visualizer
+        const canvas = document.getElementById('waveform');
+        const ctx = canvas.getContext('2d');
+        let animationId;
+        let isPlaying = false;
+        
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.clientWidth * window.devicePixelRatio;
+            canvas.height = 70 * window.devicePixelRatio;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function drawWaveform(time) {
+            if (!isPlaying) return;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = '#6366f1';
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+            
+            const numBars = 50;
+            const barWidth = (canvas.width / numBars) - 4;
+            
+            for (let i = 0; i < numBars; i++) {
+                // Generate a visual wave pattern based on sine/noise
+                const heightScale = Math.sin(i * 0.15 + time * 0.005) * Math.cos(i * 0.05 + time * 0.003);
+                const noise = Math.random() * 0.15;
+                const barHeight = Math.max(8, (Math.abs(heightScale) + noise) * canvas.height * 0.85);
+                
+                const x = i * (barWidth + 4);
+                const y = (canvas.height - barHeight) / 2;
+                
+                // Dynamic gradient coloring
+                const grad = ctx.createLinearGradient(x, y, x, y + barHeight);
+                grad.addColorStop(0, '#6366f1');
+                grad.addColorStop(1, '#a855f7');
+                ctx.strokeStyle = grad;
+                
+                ctx.beginPath();
+                ctx.moveTo(x + barWidth / 2, y);
+                ctx.lineTo(x + barWidth / 2, y + barHeight);
+                ctx.stroke();
+            }
+            
+            animationId = requestAnimationFrame(drawWaveform);
+        }
+
+        function drawIdle() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height / 2);
+            ctx.lineTo(canvas.width, canvas.height / 2);
+            ctx.stroke();
+        }
+        drawIdle();
+
+        // Audio Player Simulation
+        const playBtn = document.getElementById('playBtn');
+        const playIcon = document.getElementById('playIcon');
+        
+        // Mock Audio context to play a simulated sound
+        let audioCtx;
+        let oscillator;
+        let gainNode;
+
+        playBtn.addEventListener('click', () => {
+            if (isPlaying) {
+                // Pause
+                isPlaying = false;
+                cancelAnimationFrame(animationId);
+                playIcon.setAttribute('d', 'M8 5v14l11-7z'); // Play icon
+                drawIdle();
+                
+                // Stop audio
+                if (oscillator) {
+                    try { oscillator.stop(); } catch(e) {}
+                }
+            } else {
+                // Play
+                isPlaying = true;
+                playIcon.setAttribute('d', 'M6 19h4V5H6v14zm8-14v14h4V5h-4z'); // Pause icon
+                drawWaveform(performance.now());
+                
+                // Basic Web Audio synthesizer to generate vocal-like synth tone (hum)
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                
+                oscillator = audioCtx.createOscillator();
+                gainNode = audioCtx.createGain();
+                
+                // Human voice hum frequencies (around 120-200Hz)
+                oscillator.type = 'triangle';
+                oscillator.frequency.setValueAtTime(140, audioCtx.currentTime);
+                
+                // Add some vibrato
+                const vibrato = audioCtx.createOscillator();
+                vibrato.frequency.value = 6; // Hz
+                const vibratoGain = audioCtx.createGain();
+                vibratoGain.gain.value = 4; // Frequency deviation
+                vibrato.connect(vibratoGain);
+                vibratoGain.connect(oscillator.frequency);
+                vibrato.start();
+                
+                gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0.2, audioCtx.currentTime + 0.1);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                oscillator.start();
+                
+                // Auto-stop after 4 seconds
+                setTimeout(() => {
+                    if (isPlaying) {
+                        playBtn.click();
+                    }
+                }, 4000);
+            }
+        });
+
+        // Form Validation & Activation Simulation
+        const form = document.getElementById('redemptionForm');
+        const btnSpinner = document.getElementById('btnSpinner');
+        const btnText = document.getElementById('btnText');
+        const redeemWrapper = document.getElementById('redeemFormWrapper');
+        const downloadBox = document.getElementById('downloadBox');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Show loading spinner
+            btnSpinner.style.display = 'block';
+            btnText.textContent = 'Verifying license...';
+            document.querySelector('.btn-submit').style.pointerEvents = 'none';
+
+            // Simulate server network validation delay (1.8 seconds)
+            setTimeout(() => {
+                btnSpinner.style.display = 'none';
+                document.querySelector('.btn-submit').style.pointerEvents = 'all';
+                
+                // Swap form screen to download panel
+                redeemWrapper.style.display = 'none';
+                downloadBox.style.display = 'block';
+                
+                // Smooth scroll to download box
+                downloadBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 1800);
+        });
+    </script>
+</body>
+</html>
