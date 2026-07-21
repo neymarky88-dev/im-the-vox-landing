@@ -775,6 +775,28 @@
                 font-size: 0.9rem;
             }
         }
+        
+        .lang-selector {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .lang-selector:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+        .lang-selector.active {
+            background: #3b82f6;
+            border-color: #60a5fa;
+            color: #fff;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+        }
     </style>
 </head>
 <body>
@@ -813,13 +835,20 @@
                 <span class="visualizer-tag">Neural Voice AI</span>
             </div>
             <canvas id="waveform"></canvas>
-            <div class="visualizer-controls">
-                <button class="btn-play" id="playBtn" aria-label="Play sample audio">
-                    <svg viewBox="0 0 24 24"><path id="playIcon" d="M8 5v14l11-7z"/></svg>
-                </button>
-                <div class="audio-track-info">
-                    <div class="audio-track-title">Demo_Cloned_Voice_Man_Serious</div>
-                    <div class="audio-track-desc">Real voice narration generated offline by the app engine (Male serious model)</div>
+            <div class="visualizer-controls" style="flex-direction: column; align-items: stretch; gap: 1rem;">
+                <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
+                    <button class="lang-selector active" data-src="./Demo_English_Man_Serious.wav" data-title="English (Native Model)">🇺🇸 English</button>
+                    <button class="lang-selector" data-src="./Demo_PT-BR_Man_Serious.wav" data-title="Portuguese (Cloned Identity)">🇧🇷 Português</button>
+                    <button class="lang-selector" data-src="./Demo_Spanish_Man_Serious.wav" data-title="Spanish (Cloned Identity)">🇪🇸 Español</button>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: rgba(15, 23, 42, 0.5); border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                    <button class="btn-play" id="playBtn" aria-label="Play sample audio">
+                        <svg viewBox="0 0 24 24"><path id="playIcon" d="M8 5v14l11-7z"/></svg>
+                    </button>
+                    <div class="audio-track-info">
+                        <div class="audio-track-title" id="audioTitle">English (Native Model)</div>
+                        <div class="audio-track-desc">100% Offline Zero-Shot Multi-lingual Synthesis Engine</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -944,29 +973,56 @@
         <div class="faq-list">
             <div class="faq-item">
                 <button class="faq-trigger">
-                    What are the minimum hardware requirements?
+                    Do I need to pay monthly fees or buy character credits?
                     <svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                 </button>
                 <div class="faq-content">
-                    <p>For comfortable offline generation, we recommend Windows 10/11, 8GB RAM, and a standard CPU. An NVIDIA GPU with CUDA compatibility accelerates voice synthesis to under 4 seconds, but a CPU fallback is supported out of the box.</p>
+                    <p><strong>Absolutely NOT!</strong> Once you grab this Lifetime Deal, you own the software forever. No subscriptions, no token limits, and no hidden API costs. You can clone unlimited voices and narrate entire audiobooks on your own machine without paying a single dime extra.</p>
                 </div>
             </div>
             <div class="faq-item">
                 <button class="faq-trigger">
-                    Does the app collect any personal data or audio files?
+                    Are the voices and subtitles generated truly royalty-free?
                     <svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                 </button>
                 <div class="faq-content">
-                    <p>No. Data privacy is a core objective of the application. The secure local backend binds exclusively to localhost (127.0.0.1) and operates 100% offline. No voice samples, generated audios, or text contents are ever transmitted outside your computer.</p>
+                    <p><strong>Yes, 100% yours to monetize.</strong> Everything you generate using I'm the VOX belongs to you. Whether you are producing YouTube cash-cow videos, selling professional voiceovers, or publishing audiobooks, you retain full commercial rights over the output.</p>
                 </div>
             </div>
             <div class="faq-item">
                 <button class="faq-trigger">
-                    Is this a true Lifetime Deal?
+                    Is my voice data safe and private?
                     <svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                 </button>
                 <div class="faq-content">
-                    <p>Yes. Buying the deal on AppSumo grants you a lifetime license code. You redeem it once here to obtain the downloadable standalone bundle. There are no monthly fees, token limits, or recurring subscription payments.</p>
+                    <p>Your privacy is our biggest asset. I'm the VOX runs entirely locally (offline) on your machine. Your voice samples, your scripts, and your synthesized audios never leave your hard drive. No cloud servers, no spying.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-trigger">
+                    Do I need an expensive supercomputer to run this?
+                    <svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+                <div class="faq-content">
+                    <p>Not at all! While an NVIDIA GPU (CUDA) makes generation lightning fast (under 4 seconds), we built a smart CPU fallback. Any modern Windows 10/11 PC with at least 8GB of RAM can run the engine comfortably, making studio-grade AI accessible to everyone.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-trigger">
+                    Can I really clone a voice from a short audio clip?
+                    <svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+                <div class="faq-content">
+                    <p>Yes! Our Zero-Shot Voice Cloning engine only requires a <strong>10 to 30 second</strong> clear audio sample. It extracts the vocal identity, pitch, and timbre instantly, allowing you to synthesize any new text as if that person were reading it in a studio.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-trigger">
+                    I'm not a tech expert. Is it hard to install?
+                    <svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+                <div class="faq-content">
+                    <p>No coding, no complicated setup, no "Python dependencies" nightmares. We package the entire AI engine into a single portable bundle. Just extract the ZIP, double-click <strong>Im_the_VOX.exe</strong>, and a beautiful web interface will open in your browser automatically.</p>
                 </div>
             </div>
         </div>
@@ -1068,8 +1124,10 @@
         // Audio Player using HTML5 Audio + Web Audio API Visualizer
         const playBtn = document.getElementById('playBtn');
         const playIcon = document.getElementById('playIcon');
+        const audioTitle = document.getElementById('audioTitle');
+        const langSelectors = document.querySelectorAll('.lang-selector');
         
-        const audio = new Audio('./Demo_Man_Serious.wav');
+        let audio = new Audio('./Demo_English_Man_Serious.wav');
         let audioCtx = null;
         let source = null;
         let analyser = null;
@@ -1083,6 +1141,45 @@
             source.connect(analyser);
             analyser.connect(audioCtx.destination);
         }
+
+        langSelectors.forEach(btn => {
+            btn.addEventListener('click', () => {
+                langSelectors.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                const wasPlaying = isPlaying;
+                if (isPlaying) {
+                    audio.pause();
+                }
+                
+                // Disconnect old source before creating new Audio
+                if (source) {
+                    source.disconnect();
+                    source = null;
+                }
+                
+                audio = new Audio(btn.getAttribute('data-src'));
+                audioTitle.innerText = btn.getAttribute('data-title');
+                
+                if (audioCtx) {
+                    source = audioCtx.createMediaElementSource(audio);
+                    source.connect(analyser);
+                }
+                
+                audio.addEventListener('ended', () => {
+                    isPlaying = false;
+                    playIcon.setAttribute('d', 'M8 5v14l11-7z'); // Play icon
+                });
+
+                if (wasPlaying) {
+                    audio.play();
+                    playIcon.setAttribute('d', 'M6 19h4V5H6v14zm8-14v14h4V5h-4z'); // Pause icon
+                } else {
+                    isPlaying = false;
+                    playIcon.setAttribute('d', 'M8 5v14l11-7z');
+                }
+            });
+        });
 
         playBtn.addEventListener('click', () => {
             initAudio();
@@ -1100,15 +1197,15 @@
             } else {
                 // Play
                 isPlaying = true;
-                playIcon.setAttribute('d', 'M6 19h4V5H6v14zm8-14v14h4V5h-4z'); // Pause icon
                 audio.play();
-                drawWaveform();
+                playIcon.setAttribute('d', 'M6 19h4V5H6v14zm8-14v14h4V5h-4z'); // Pause icon
+                drawWaveform(performance.now());
             }
         });
-        
+
         audio.addEventListener('ended', () => {
             isPlaying = false;
-            playIcon.setAttribute('d', 'M8 5v14l11-7z');
+            playIcon.setAttribute('d', 'M8 5v14l11-7z'); // Play icon
             drawIdle();
         });
 
