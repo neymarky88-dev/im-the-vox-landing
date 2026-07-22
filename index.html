@@ -950,7 +950,7 @@
                 </div>
                 <h3>License Validated Successfully!</h3>
                 <p>Your license key has been activated. Use the button below to download the portable application package (~2.4 GB ZIP) including all pre-loaded neural models and dependencies.</p>
-                <a href="https://drive.google.com/file/d/1qvq-Yx3Z4mqRG6ZQn827dxwVwJfXCN-O/view?usp=sharing" class="btn-download" target="_blank" id="downloadBtn">
+                <a href="#" class="btn-download" target="_blank" id="downloadBtn">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                     Download Portable Zip
                 </a>
@@ -1228,6 +1228,15 @@
         form.addEventListener('submit', (e) => {
             e.preventDefault();
             
+            const codeInput = document.getElementById('sumoCode').value.trim().toUpperCase();
+            // Basic pattern validation (Smoke and Mirrors for static sites): VOX-XXXX-XXXX-XXXX
+            const codeRegex = /^VOX-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/;
+            
+            if (!codeRegex.test(codeInput)) {
+                alert("Invalid AppSumo License Code. Please check your code and try again.");
+                return;
+            }
+            
             // Show loading spinner
             btnSpinner.style.display = 'block';
             btnText.textContent = 'Verifying license...';
@@ -1237,6 +1246,10 @@
             setTimeout(() => {
                 btnSpinner.style.display = 'none';
                 document.querySelector('.btn-submit').style.pointerEvents = 'all';
+                
+                // Obfuscated Base64 URL injection to prevent Inspect Element snooping
+                const _0x1a = "aHR0cHM6Ly9kcml2ZS5nb29nbGUuY29tL2ZpbGUvZC8xcXZxLVl4M1o0bXFSRzZaUW44MjdkeHdWd0pmWENOLU8vdmlldz91c3A9c2hhcmluZw==";
+                document.getElementById('downloadBtn').href = atob(_0x1a);
                 
                 // Swap form screen to download panel
                 redeemWrapper.style.display = 'none';
