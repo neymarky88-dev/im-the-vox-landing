@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I'm the VOX — Clonagem de Voz e Narração com IA 100% Offline</title>
+    <meta name="description" content="Clone qualquer voz em 10 segundos e narre livros, roteiros ou artigos offline. Sem taxas mensais, total privacidade de dados e áudio profissional de estúdio.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS Custom Properties / Design System */
+        :root {
+            --bg-base: #0a0b10;
+            --bg-surface: rgba(17, 20, 28, 0.65);
+            --bg-surface-solid: #11141c;
+            --border-glow: rgba(99, 102, 241, 0.15);
+            --border-light: rgba(255, 255, 255, 0.08);
+            
+            --color-primary: #6366f1; /* Indigo */
+            --color-secondary: #a855f7; /* Purple */
+            --color-accent: #06b6d4; /* Cyan */
+            --color-success: #10b981; /* Emerald */
+            --color-text-main: #f3f4f6;
+            --color-text-muted: #9ca3af;
+            
+            --font-display: 'Outfit', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Reset & Base Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--color-text-main);
+            font-family: var(--font-body);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Abstract Glowing Backgrounds */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, rgba(0,0,0,0) 70%);
+            top: -100px;
+            left: -100px;
+            z-index: -1;
+            filter: blur(80px);
+            pointer-events: none;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.08) 0%, rgba(0,0,0,0) 70%);
+            top: 600px;
+            right: -200px;
+            z-index: -1;
+            filter: blur(100px);
+            pointer-events: none;
+        }
+
+        /* Navigation Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            background: rgba(10, 11, 16, 0.7);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.25rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--color-text-main);
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--color-accent);
+            box-shadow: 0 0 10px var(--color-accent);
+        }
+
+        nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--color-text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: var(--transition-smooth);
+        }
+
+        nav a:hover {
+            color: var(--color-text-main);
+        }
+
+        .btn-header {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 99px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2);
+            transition: var(--transition-smooth);
+        }
+
+        .btn-header:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 10rem 2rem 6rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .badge-ltd {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            color: #c7d2fe;
+            padding: 0.4rem 1rem;
+            border-radius: 99px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .badge-ltd .pulse {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: var(--color-success);
+            box-shadow: 0 0 8px var(--color-success);
+            animation: pulse-glow 2s infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.4); opacity: 0.6; }
+        }
+
+        .hero h1 {
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 3.5rem;
+            line-height: 1.15;
+            letter-spacing: -1px;
+            margin-bottom: 1.5rem;
+            max-width: 900px;
+            background: linear-gradient(180deg, #ffffff 30%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p.lead {
+            font-size: 1.25rem;
+            color: var(--color-text-muted);
+            max-width: 750px;
+            margin-bottom: 3rem;
+            font-weight: 400;
+        }
+
+        /* Interactive Audio Visualizer */
+        .visualizer-container {
+            width: 100%;
+            max-width: 650px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-light);
+            border-radius: 20px;
+            padding: 1.5rem;
+            backdrop-filter: blur(16px);
+            margin-bottom: 3.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.2rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .visualizer-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--color-primary), var(--color-secondary), transparent);
+        }
+
+        .visualizer-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        canvas {
+            width: 100%;
+            height: 70px;
+            background: rgba(10, 11, 16, 0.4);
+            border-radius: 10px;
+        }
+
+        .visualizer-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            width: 100%;
+        }
+
+        .btn-play {
+            background: var(--color-primary);
+            border: none;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-smooth);
+            box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+            flex-shrink: 0;
+        }
+
+        .btn-play:hover {
+            transform: scale(1.08);
+            background: #5558e6;
+        }
+
+        .btn-play svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        .audio-track-info {
+            text-align: left;
+            flex-grow: 1;
+        }
+
+        .audio-track-title {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .audio-track-desc {
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+        }
+
+        .visualizer-tag {
+            font-size: 0.75rem;
+            background: rgba(6, 182, 212, 0.15);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            color: #22d3ee;
+            padding: 0.2rem 0.6rem;
+            border-radius: 99px;
+            font-weight: 600;
+        }
+
+        /* Section Container */
+        section.info-section {
+            padding: 6rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-header h2 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 2.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            color: var(--color-text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 2.5rem;
+            backdrop-filter: blur(16px);
+            transition: var(--transition-smooth);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1.2rem;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(99, 102, 241, 0.3);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.05);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            color: var(--color-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .feature-card h3 {
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: 1.25rem;
+        }
+
+        .feature-card p {
+            color: var(--color-text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* How it Works */
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 28px;
+            top: 20px;
+            bottom: 20px;
+            width: 2px;
+            background: linear-gradient(180deg, var(--color-primary), var(--color-secondary));
+            opacity: 0.3;
+        }
+
+        .timeline-step {
+            display: flex;
+            gap: 2rem;
+            position: relative;
+        }
+
+        .step-num {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            background: var(--bg-surface-solid);
+            border: 2px solid var(--color-primary);
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.25);
+            z-index: 1;
+        }
+
+        .timeline-step:nth-child(even) .step-num {
+            border-color: var(--color-secondary);
+            box-shadow: 0 0 15px rgba(168, 85, 247, 0.25);
+        }
+
+        .step-content {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 2rem;
+            flex-grow: 1;
+            backdrop-filter: blur(16px);
+        }
+
+        .step-content h3 {
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-content p {
+            color: var(--color-text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Redemption Portal Box */
+        .redeem-section {
+            background: linear-gradient(180deg, rgba(99, 102, 241, 0.05) 0%, transparent 100%);
+            border-radius: 24px;
+            border: 1px solid var(--border-glow);
+            padding: 4rem 2rem;
+            max-width: 800px;
+            margin: 4rem auto;
+            text-align: center;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .redeem-section h2 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .redeem-section p {
+            color: var(--color-text-muted);
+            margin-bottom: 2.5rem;
+            font-size: 1.05rem;
+        }
+
+        .redeem-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            max-width: 450px;
+            margin: 0 auto;
+        }
+
+        .input-group {
+            position: relative;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            background: rgba(10, 11, 16, 0.7);
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            padding: 0.9rem 1.2rem;
+            color: white;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: var(--transition-smooth);
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.2);
+            outline: none;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Success Download Box */
+        .download-box {
+            display: none;
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 500px;
+            margin: 0 auto;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .download-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--color-success);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+
+        .download-box h3 {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            margin-bottom: 0.8rem;
+            color: white;
+        }
+
+        .download-box p {
+            font-size: 0.95rem;
+            color: var(--color-text-muted);
+            margin-bottom: 1.8rem;
+            line-height: 1.5;
+        }
+
+        .btn-download {
+            background: var(--color-success);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+            transition: var(--transition-smooth);
+        }
+
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+            background: #059669;
+        }
+
+        .download-instructions {
+            margin-top: 1.5rem;
+            font-size: 0.8rem !important;
+            color: var(--color-text-muted);
+            text-align: left;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 1rem;
+        }
+
+        /* FAQ Accordion */
+        .faq-list {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .faq-item {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: var(--transition-smooth);
+        }
+
+        .faq-trigger {
+            width: 100%;
+            background: transparent;
+            border: none;
+            padding: 1.5rem;
+            text-align: left;
+            color: white;
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-icon {
+            width: 24px;
+            height: 24px;
+            transition: transform 0.3s ease;
+            color: var(--color-primary);
+        }
+
+        .faq-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            padding: 0 1.5rem;
+            color: var(--color-text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .faq-item.active .faq-content {
+            max-height: 200px;
+            padding-bottom: 1.5rem;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border-light);
+            padding: 4rem 2rem 2rem;
+            background: rgba(10, 11, 16, 0.9);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-logo {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: white;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .footer-links a {
+            color: var(--color-text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: var(--transition-smooth);
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 0.8rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 1.5rem;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Spinner / Loading CSS */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            nav {
+                display: none; /* simple mobile bypass */
+            }
+            .timeline::before {
+                left: 18px;
+            }
+            .step-num {
+                width: 38px;
+                height: 38px;
+                font-size: 0.9rem;
+            }
+        }
+        
+        .lang-selector {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .lang-selector:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+        .lang-selector.active {
+            background: #3b82f6;
+            border-color: #60a5fa;
+            color: #fff;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <span>I'm the VOX</span>
+                <div class="logo-dot"></div>
+            </a>
+            <nav>
+                <a href="#features">Recursos</a>
+                <a href="#workflow">Como Funciona</a>
+                <a href="#checkout">Comprar Agora</a>
+                <a href="#faq">FAQ</a>
+            </nav>
+            <a href="#checkout" class="btn-header">Comprar Agora (R$ 147)</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="badge-ltd">
+            <div class="pulse"></div>
+            Oferta Especial de Lançamento
+        </div>
+        <h1>Sua Voz, 100% Offline.<br>Clonagem e Narração em Segundos.</h1>
+        <p class="lead">Clone qualquer voz com alta fidelidade usando uma amostra de 10 a 30 segundos. Narre livros longos ou roteiros e gere legendas sincronizadas — processado inteiramente na sua máquina, com privacidade total e ZERO taxas mensais.</p>
+        
+        <!-- Interactive Preview -->
+        <div class="visualizer-container">
+            <div class="visualizer-label">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c1.103 0 2 .897 2 2v12c0 1.103-.897 2-2 2s-2-.897-2-2v-12c0-1.103.897-2 2-2zm0-2c-2.209 0-4 1.791-4 4v12c0 2.209 1.791 4 4 4s4-1.791 4-4v-12c0-2.209-1.791-4-4-4zm8 9v3c0 4.418-3.582 8-8 8s-8-3.582-8-8v-3h-2v3c0 5.141 3.826 9.395 8.837 9.932v3.068h-4.837v2h11.674v-2h-4.837v-3.068c5.011-.537 8.837-4.791 8.837-9.932v-3h-2z"/></svg>
+                Ouça uma Amostra de Voz Clonada
+                <span class="visualizer-tag">Inteligência Artificial</span>
+            </div>
+            <canvas id="waveform"></canvas>
+            <div class="visualizer-controls" style="flex-direction: column; align-items: stretch; gap: 1rem;">
+                <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
+                    <button class="lang-selector active" data-src="../Demo_English_Man_Serious.wav" data-title="Inglês (Modelo Nativo)">🇺🇸 Inglês</button>
+                    <button class="lang-selector" data-src="../Demo_PT-BR_Man_Serious.wav" data-title="Português (Identidade Clonada)">🇧🇷 Português</button>
+                    <button class="lang-selector" data-src="../Demo_Spanish_Man_Serious.wav" data-title="Espanhol (Identidade Clonada)">🇪🇸 Espanhol</button>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: rgba(15, 23, 42, 0.5); border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                    <button class="btn-play" id="playBtn" aria-label="Tocar áudio de exemplo">
+                        <svg viewBox="0 0 24 24"><path id="playIcon" d="M8 5v14l11-7z"/></svg>
+                    </button>
+                    <div class="audio-track-info">
+                        <div class="audio-track-title" id="audioTitle">Inglês (Modelo Nativo)</div>
+                        <div class="audio-track-desc">Motor de Síntese Zero-Shot Multilíngue 100% Offline</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="info-section">
+        <div class="section-header">
+            <h2>Projetado para Privacidade. Feito para Potência.</h2>
+            <p>O I'm the VOX usa modelos de Inteligência Artificial rodando localmente no seu computador para entregar qualidade de estúdio sem precisar de internet.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <h3>100% de Privacidade Offline</h3>
+                <p>Todo o processamento de voz, tratamento de áudio e reconhecimento de fala ocorrem no seu PC. Sem filas em servidores, sem mensalidades e privacidade total para seus roteiros.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.5 1z"/></svg>
+                </div>
+                <h3>Tratamento de Áudio Integrado</h3>
+                <p>Nós embutimos o FFmpeg no motor. Ele remove automaticamente ruídos de fundo e picos de volume dinâmicos, entregando uma narração limpa e pronta para publicação.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </div>
+                <h3>Gerador de Legendas Instantâneo</h3>
+                <p>Cria automaticamente arquivos de legenda <code>.srt</code> perfeitamente sincronizados em múltiplos idiomas (Português, Inglês, Espanhol, etc.) junto com os seus áudios sintetizados.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Workflow -->
+    <section id="workflow" class="info-section">
+        <div class="section-header">
+            <h2>Processo Simples e Transparente</h2>
+            <p>Da instalação à exportação final, todo o fluxo foi desenhado para ser "Plug and Play". Zero dor de cabeça.</p>
+        </div>
+        <div class="timeline">
+            <div class="timeline-step">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <h3>Instalação em 2 Cliques</h3>
+                    <p>Basta extrair a pasta ZIP que você vai baixar. Dê um duplo clique no arquivo <code>Im_the_VOX.exe</code> e uma interface linda se abrirá automaticamente no seu navegador.</p>
+                </div>
+            </div>
+            <div class="timeline-step">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <h3>Clone a Voz</h3>
+                    <p>Faça o upload de uma pequena amostra de áudio (.mp3, .wav) de 10 a 30 segundos da voz que você deseja clonar, ou grave direto pelo microfone. O sistema salva a assinatura vocal no seu banco privado.</p>
+                </div>
+            </div>
+            <div class="timeline-step">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                    <h3>Sintetize e Exporte</h3>
+                    <p>Cole o seu texto. O motor divide as frases inteligentemente, gera os áudios preservando as pausas de respiração naturais e exporta a faixa final junto com as legendas sincronizadas.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Checkout Section -->
+    <section id="checkout" class="info-section">
+        <div class="redeem-section">
+            <h2>Pare de pagar aluguel mensal por vozes robóticas.</h2>
+            <p>Plataformas de inteligência artificial na nuvem cobram até <strong>R$ 1.440,00 por ano</strong> limitando a quantidade de palavras que você pode gerar. Com o I'm the VOX, você adquire a licença do software e ele é seu para sempre, sem limites e sem mensalidades.</p>
+            
+            <div style="background: rgba(99, 102, 241, 0.1); border: 1px solid var(--color-primary); border-radius: 16px; padding: 2rem; max-width: 500px; margin: 2rem auto;">
+                <div style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: var(--color-text-muted); margin-bottom: 0.5rem;">Acesso Vitalício</div>
+                <div style="font-size: 3.5rem; font-weight: 800; font-family: var(--font-display); color: white; margin-bottom: 1.5rem;">R$ 147<span style="font-size: 1rem; color: var(--color-text-muted); font-weight: 400;">/taxa única</span></div>
+                
+                <a href="#" class="btn-submit" style="text-decoration: none; display: block; font-size: 1.1rem; padding: 1.2rem;">
+                    <span>Comprar Acesso Agora</span>
+                </a>
+                
+                <p style="font-size: 0.85rem; margin-top: 1.5rem; margin-bottom: 0;">Você receberá o acesso imediato à Área de Membros para download.</p>
+                <div style="margin-top: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; color: var(--color-success); font-size: 0.85rem; font-weight: 600;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    Pagamento Seguro via Cakto
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="faq" class="info-section">
+        <div class="section-header">
+            <h2>Perguntas Frequentes</h2>
+            <p>Ainda tem dúvidas sobre como um software de Inteligência Artificial funciona 100% offline? Confira as respostas abaixo.</p>
+        </div>
+        <div class="faq-list">
+            <div class="faq-item">
+                <button class="faq-trigger">
+                    Eu preciso pagar mensalidades ou comprar créditos de voz?
+                    <svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+                <div class="faq-content">
+                    <p><strong>De jeito nenhum!</strong> Assim que você adquirir essa licença vitalícia, o software é seu para sempre. Sem assinaturas mensais, sem limites de tokens ou caracteres, e sem custos escondidos de API. Você pode gerar quantos áudios quiser na sua própria máquina sem pagar nem um centavo a mais.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-trigger">
+                    Os áudios gerados são meus? Posso monetizar?
+                    <svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+                <div class="faq-content">
+                    <p><strong>Sim, 100% seus para monetizar.</strong> O nosso software não cobra royalties ou taxas extras. Você mantém todos os direitos comerciais sobre o que produzir, seja para canais no YouTube, VSLs, narração de vídeos ou audiolivros. <em>Nota importante: Você é o único responsável por garantir que tem os direitos legais ou a permissão da pessoa real antes de clonar a voz dela como referência.</em></p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-trigger">
+                    Os meus dados de voz e roteiros estão seguros?
+                    <svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+                <div class="faq-content">
+                    <p>A sua privacidade é o nosso maior trunfo. O I'm the VOX roda inteiramente local (offline) na sua máquina. Suas amostras de voz, seus textos sensíveis e os áudios gerados nunca saem do seu HD. Sem servidores na nuvem, sem espionagem de corporações.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-trigger">
+                    Preciso de um computador superpotente da NASA para rodar?
+                    <svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+                <div class="faq-content">
+                    <p>Embora tenhamos criado um sistema que roda também em processadores comuns (CPU), <strong>recomendamos fortemente o uso de uma Placa de Vídeo NVIDIA (CUDA) dedicada</strong> para ter um desempenho de ponta. Com uma boa GPU, frases curtas são geradas em segundos. Textos muito grandes (como capítulos inteiros de livros) levarão naturalmente mais tempo. A execução apenas na CPU funciona em qualquer Windows 10/11 com pelo menos 8GB de RAM, mas a geração será consideravelmente mais lenta. Se você só tiver CPU, adquira apenas se tiver paciência para aguardar o carregamento.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-trigger">
+                    Eu consigo mesmo clonar uma voz com um áudio tão curto?
+                    <svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+                <div class="faq-content">
+                    <p>Com certeza! Nosso motor de clonagem avançada extrai a assinatura vocal, o tom e o timbre precisando apenas de uma amostra limpa de <strong>10 a 30 segundos</strong> de áudio. A IA mapeia isso instantaneamente e gera novos textos como se a pessoa estivesse dentro de um estúdio de gravação.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-trigger">
+                    Não sou especialista em TI nem programador. É difícil de instalar?
+                    <svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+                <div class="faq-content">
+                    <p>Nenhuma linha de código, sem tutoriais confusos e sem depender do Python instalado no seu PC. Nós empacotamos o motor de Inteligência Artificial inteiro num pacote portátil gigante. Tudo que você tem que fazer é extrair a pasta ZIP e dar 2 cliques no arquivo <strong>Im_the_VOX.exe</strong>. O sistema sobe sozinho e abre o painel direto no seu navegador Chrome.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-trigger">
+                    Por que a placa de vídeo (GPU) da AMD não é suportada de fábrica?
+                    <svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+                <div class="faq-content">
+                    <p>Os modelos neurais que impulsionam o I'm the VOX dependem estritamente da tecnologia <strong>CUDA</strong>, que é de exclusividade da NVIDIA. Embora a AMD tenha alternativas (como ROCm ou DirectML), o suporte oficial dessas bibliotecas no ambiente Windows ainda é altamente instável e propenso a falhas gerando ruídos no áudio. Para garantir que 100% dos usuários tenham uma experiência perfeita "clicou-funcionou" sem precisar configurar subsistemas Linux complexos, nosso app transfere automaticamente o processamento para a sua CPU caso uma placa NVIDIA não seja detectada.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                I'm the VOX
+            </div>
+            <div class="footer-links">
+                <a href="#features">Recursos</a>
+                <a href="#workflow">Processo</a>
+                <a href="#checkout">Comprar Agora</a>
+                <a href="#faq">FAQ</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2026 I'm the VOX. Todos os direitos reservados.
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // FAQ Accordion Logic
+        document.querySelectorAll('.faq-trigger').forEach(trigger => {
+            trigger.addEventListener('click', () => {
+                const parent = trigger.parentElement;
+                const isActive = parent.classList.contains('active');
+                
+                // Close all others
+                document.querySelectorAll('.faq-item').forEach(item => item.classList.remove('active'));
+                
+                if (!isActive) {
+                    parent.classList.add('active');
+                }
+            });
+        });
+
+        // Simulated Audio Waveform Visualizer
+        const canvas = document.getElementById('waveform');
+        const ctx = canvas.getContext('2d');
+        let animationId;
+        let isPlaying = false;
+        
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.clientWidth * window.devicePixelRatio;
+            canvas.height = 70 * window.devicePixelRatio;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function drawWaveform(time) {
+            if (!isPlaying) return;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = '#6366f1';
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+            
+            const numBars = 50;
+            const barWidth = (canvas.width / numBars) - 4;
+            
+            for (let i = 0; i < numBars; i++) {
+                // Generate a visual wave pattern based on sine/noise
+                const heightScale = Math.sin(i * 0.15 + time * 0.005) * Math.cos(i * 0.05 + time * 0.003);
+                const noise = Math.random() * 0.15;
+                const barHeight = Math.max(8, (Math.abs(heightScale) + noise) * canvas.height * 0.85);
+                
+                const x = i * (barWidth + 4);
+                const y = (canvas.height - barHeight) / 2;
+                
+                // Dynamic gradient coloring
+                const grad = ctx.createLinearGradient(x, y, x, y + barHeight);
+                grad.addColorStop(0, '#6366f1');
+                grad.addColorStop(1, '#a855f7');
+                ctx.strokeStyle = grad;
+                
+                ctx.beginPath();
+                ctx.moveTo(x + barWidth / 2, y);
+                ctx.lineTo(x + barWidth / 2, y + barHeight);
+                ctx.stroke();
+            }
+            
+            animationId = requestAnimationFrame(drawWaveform);
+        }
+
+        function drawIdle() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height / 2);
+            ctx.lineTo(canvas.width, canvas.height / 2);
+            ctx.stroke();
+        }
+        drawIdle();
+        // Audio Player using HTML5 Audio + Web Audio API Visualizer
+        const playBtn = document.getElementById('playBtn');
+        const playIcon = document.getElementById('playIcon');
+        const audioTitle = document.getElementById('audioTitle');
+        const langSelectors = document.querySelectorAll('.lang-selector');
+        
+        let audio = new Audio('../Demo_English_Man_Serious.wav');
+        let audioCtx = null;
+        let source = null;
+        let analyser = null;
+        
+        function initAudio() {
+            if (audioCtx) return;
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 128;
+            source = audioCtx.createMediaElementSource(audio);
+            source.connect(analyser);
+            analyser.connect(audioCtx.destination);
+        }
+
+        langSelectors.forEach(btn => {
+            btn.addEventListener('click', () => {
+                langSelectors.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                const wasPlaying = isPlaying;
+                if (isPlaying) {
+                    audio.pause();
+                }
+                
+                // Disconnect old source before creating new Audio
+                if (source) {
+                    source.disconnect();
+                    source = null;
+                }
+                
+                audio = new Audio(btn.getAttribute('data-src'));
+                audioTitle.innerText = btn.getAttribute('data-title');
+                
+                if (audioCtx) {
+                    source = audioCtx.createMediaElementSource(audio);
+                    source.connect(analyser);
+                }
+                
+                audio.addEventListener('ended', () => {
+                    isPlaying = false;
+                    playIcon.setAttribute('d', 'M8 5v14l11-7z'); // Play icon
+                });
+
+                if (wasPlaying) {
+                    audio.play();
+                    playIcon.setAttribute('d', 'M6 19h4V5H6v14zm8-14v14h4V5h-4z'); // Pause icon
+                } else {
+                    isPlaying = false;
+                    playIcon.setAttribute('d', 'M8 5v14l11-7z');
+                }
+            });
+        });
+
+        playBtn.addEventListener('click', () => {
+            initAudio();
+            
+            // Resume AudioContext if suspended (browser autoplay policy)
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            if (isPlaying) {
+                // Pause
+                isPlaying = false;
+                audio.pause();
+                playIcon.setAttribute('d', 'M8 5v14l11-7z'); // Play icon
+            } else {
+                // Play
+                isPlaying = true;
+                audio.play();
+                playIcon.setAttribute('d', 'M6 19h4V5H6v14zm8-14v14h4V5h-4z'); // Pause icon
+                drawWaveform(performance.now());
+            }
+        });
+
+        audio.addEventListener('ended', () => {
+            isPlaying = false;
+            playIcon.setAttribute('d', 'M8 5v14l11-7z'); // Play icon
+            drawIdle();
+        });
+
+        // JS de resgate de código removido da versão brasileira focada em Hotmart/Kiwify.
+    </script>
+</body>
+</html>
