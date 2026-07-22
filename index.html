@@ -1025,6 +1025,15 @@
                     <p>No coding, no complicated setup, no "Python dependencies" nightmares. We package the entire AI engine into a single portable bundle. Just extract the ZIP, double-click <strong>Im_the_VOX.exe</strong>, and a beautiful web interface will open in your browser automatically.</p>
                 </div>
             </div>
+            <div class="faq-item">
+                <button class="faq-trigger">
+                    Why isn't AMD GPU acceleration supported natively?
+                    <svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+                <div class="faq-content">
+                    <p>The Artificial Intelligence models powering I'm the VOX rely heavily on <strong>CUDA</strong>, a technology exclusively developed by NVIDIA. While AMD has alternative technologies (like ROCm or DirectML), their official support for PyTorch on Windows is still highly experimental and prone to severe audio artifacts or generation crashes. To ensure a 100% stable, "plug-and-play" experience without requiring users to install complex Linux subsystems (WSL2), our application automatically falls back to your CPU if an NVIDIA GPU is not detected.</p>
+                </div>
+            </div>
         </div>
     </section>
 
